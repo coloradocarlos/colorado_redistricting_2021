@@ -137,4 +137,6 @@ if __name__ == "__main__":
     # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2016/general/stateRepresentatives.html
     htmlfile = './sos_files/stateSenate.2016.html'
     csvfile = './election_data/stateSenate.2016.csv'
+    print(f"Processing {htmlfile}")
     process_election_file(htmlfile, csvfile)
+    print(f"CSV written to {csvfile}")
