@@ -40,6 +40,9 @@ def process_election_file(htmlfile, csvfile):
         for line in fp1.readlines():
             # District heading
             matches = re.match(r'^<h2 class="w3-toppad"><a id="(?:d)?(?:\d+)" name="(?:d)?(?:\d+)"></a>(?:State Senate - )?District (\d+)</h2>$', line)
+            if not matches:
+                # Try 2014 pattern:
+                matches = re.match(r'^<h2 class="w3-toppad"><a id="d(?:\d+)"></a>District (\d+)</h2>$', line)
             if matches:
                 fields['district'] = int(matches.groups()[0])
                 county_list = []
@@ -82,6 +85,12 @@ def process_election_file(htmlfile, csvfile):
             total = total_matcher(line, r'(?:.+)\((?!(?:DEM|REP))\w+\)')
             if total:
                 fields['other'] += total  # Sum
+                continue
+
+            # 2014 write-in for District 60
+            total = total_matcher(line, r'(?:.+)\(UNA\)(?: \(Write-In\))?')
+            if total:
+                fields['other'] += total  # Sum because of write-in UNA
                 continue
 
             # Democrat
@@ -143,8 +152,8 @@ def process_election_file(htmlfile, csvfile):
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
     # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2016/general/stateRepresentatives.html
-    htmlfile = './sos_files/stateSenate.2018.html'
-    csvfile = './election_data/stateSenate.2018.csv'
+    htmlfile = './sos_files/representatives.2014.html'
+    csvfile = './election_data/representatives.2014.csv'
     print(f"Processing {htmlfile}")
     process_election_file(htmlfile, csvfile)
     print(f"CSV written to {csvfile}")
