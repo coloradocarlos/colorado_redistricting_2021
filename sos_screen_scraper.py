@@ -51,6 +51,9 @@ def process_election_file(htmlfile, csvfile):
             # Total
             # <td><strong><span class="ADAhidden">County </span>Total</strong></td>
             matches = re.match(r'<td>(?:<strong>)?<span class="ADAhidden">County </span>(?:<strong>)?([\w\s]+)(?:</strong>)?</td>', line)
+            if fields['district'] == 13 and not matches:
+                # Special case for 2012 District 13: <td><strong>Total</strong></td>
+                matches = re.match(r'<td>(?:<strong>)?([\w\s]+)(?:</strong>)?</td>', line)
             if matches:
                 if matches.groups()[0] == 'Total':
                     total_found = True
@@ -67,7 +70,7 @@ def process_election_file(htmlfile, csvfile):
                 line = '<td style="text-align: right;"><span class="ADAhidden">Jay Geyer (IND) </span><strong>2,087</strong></td>\n'
             elif fields['district'] == 46 and 'Pueblo' in county_list and line == '<td style="text-align: right;"><span class="ADAhidden">Daneya Esgar (DEM) </span><strong>20,55</strong>6</td>\n':
                 # 2018 - Distict 46 - Pueblo
-                line = '<td style="text-align: right;"><span class="ADAhidden">Daneya Esgar (DEM) </span><strong>20,556</strong></td>'
+                line = '<td style="text-align: right;"><span class="ADAhidden">Daneya Esgar (DEM) </span><strong>20,556</strong></td>\n'
 
             # Registered voters
             total = total_matcher(line, "Registered voters")
@@ -152,8 +155,8 @@ def process_election_file(htmlfile, csvfile):
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
     # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2016/general/stateRepresentatives.html
-    htmlfile = './sos_files/representatives.2014.html'
-    csvfile = './election_data/representatives.2014.csv'
+    htmlfile = './sos_files/senate.2012.html'
+    csvfile = './election_data/stateSenate.2012.csv'
     print(f"Processing {htmlfile}")
     process_election_file(htmlfile, csvfile)
     print(f"CSV written to {csvfile}")
