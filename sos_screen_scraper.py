@@ -58,6 +58,14 @@ def process_election_file(htmlfile, csvfile):
             if not total_found:
                 continue
 
+            # Fix-up errors in HTML file
+            if fields['district'] == 33 and 'Broomfield' in county_list and line == '<td style="text-align: right;"><span class="ADAhidden">Total </span><strong>2,087</strong></td>\n':
+                # 2018 - District 33 - Broomfield
+                line = '<td style="text-align: right;"><span class="ADAhidden">Jay Geyer (IND) </span><strong>2,087</strong></td>\n'
+            elif fields['district'] == 46 and 'Pueblo' in county_list and line == '<td style="text-align: right;"><span class="ADAhidden">Daneya Esgar (DEM) </span><strong>20,55</strong>6</td>\n':
+                # 2018 - Distict 46 - Pueblo
+                line = '<td style="text-align: right;"><span class="ADAhidden">Daneya Esgar (DEM) </span><strong>20,556</strong></td>'
+
             # Registered voters
             total = total_matcher(line, "Registered voters")
             if total and total_found:
@@ -117,7 +125,7 @@ def process_election_file(htmlfile, csvfile):
                 # Sanity check
                 party_total = fields['democrat'] + fields['republican'] + fields['other']
                 if party_total != fields['total']:
-                    raise Exception(f"Total mismatch for {fields['district']}: computed {party_total} != SOS {fields['total']}")
+                    raise Exception(f"Total mismatch for district {fields['district']}: computed {party_total} != SOS {fields['total']}")
 
                 # Flatten county list
                 fields['counties'] = ' - '.join(county_list)
@@ -135,8 +143,8 @@ def process_election_file(htmlfile, csvfile):
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
     # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2016/general/stateRepresentatives.html
-    htmlfile = './sos_files/stateSenate.2016.html'
-    csvfile = './election_data/stateSenate.2016.csv'
+    htmlfile = './sos_files/stateRepresentatives.2018.html'
+    csvfile = './election_data/stateRepresentatives.2018.csv'
     print(f"Processing {htmlfile}")
     process_election_file(htmlfile, csvfile)
     print(f"CSV written to {csvfile}")
