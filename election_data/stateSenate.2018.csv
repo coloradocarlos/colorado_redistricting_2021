@@ -1,0 +1,18 @@
+district,counties,registered_voters,ballots_cast,democrat,republican,other,total,dem_winner,rep_winner,landslide_d,landslide_r
+1,Cheyenne - Elbert - Kit Carson - Lincoln - Logan - Morgan - Phillips - Sedgwick - Washington - Weld - Yuma,100890,68660,13894,52311,0,66205,0,1,0,1
+2,Clear Creek - El Paso - Fremont - Park - Teller,110513,67382,22583,42531,0,65114,0,1,0,1
+3,Pueblo,100326,58134,39768,0,14253,54021,1,0,1,0
+5,Chaffee - Delta - Eagle - Gunnison - Hinsdale - Lake - Pitkin,110094,71748,41838,27375,0,69213,1,0,1,0
+6,Archuleta - Dolores - La Plata - Montezuma - Montrose - Ouray - San Juan - San Miguel,119747,76146,33208,40088,0,73296,0,1,0,0
+7,Mesa,120225,68762,24205,42327,0,66532,0,1,0,1
+9,El Paso,131511,90531,25892,61341,0,87233,0,1,0,1
+11,El Paso,94626,46510,28015,17200,0,45215,1,0,1,0
+13,Weld,96922,58813,21453,33026,1776,56255,0,1,0,0
+15,Larimer,122515,86643,39256,44434,0,83690,0,1,0,0
+16,Boulder - Denver - Gilpin - Jefferson,121373,87187,47403,35154,2597,85154,1,0,0,0
+20,Jefferson,131353,94728,49974,39102,3239,92315,1,0,0,0
+22,Jefferson,112731,75522,42747,30754,0,73501,1,0,0,0
+24,Adams,107455,70167,35578,27068,5361,68007,1,0,0,0
+30,Douglas,119741,86859,34604,43948,4710,83262,0,1,0,0
+32,Denver,114239,77427,53307,17294,3446,74047,1,0,1,0
+34,Denver,113722,67967,54312,11018,0,65330,1,0,1,0

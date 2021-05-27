@@ -143,8 +143,8 @@ def process_election_file(htmlfile, csvfile):
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
     # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2016/general/stateRepresentatives.html
-    htmlfile = './sos_files/stateRepresentatives.2018.html'
-    csvfile = './election_data/stateRepresentatives.2018.csv'
+    htmlfile = './sos_files/stateSenate.2018.html'
+    csvfile = './election_data/stateSenate.2018.csv'
     print(f"Processing {htmlfile}")
     process_election_file(htmlfile, csvfile)
     print(f"CSV written to {csvfile}")
