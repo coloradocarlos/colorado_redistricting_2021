@@ -1,5 +1,10 @@
 """
-
+This script takes the XLSX files that have been converted to CSV files and generates the
+state representatives and state senate election summary CSV.
+There are 2 inputs:
+- The General Election Statewide Abstract results
+- The General Election Precinct Level Turnout results
+The output is placed in election_data directory.
 """
 import locale
 import csv
@@ -144,10 +149,11 @@ def process_election_file(csvin, csvout, precinct_data, district_type, year):
 
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
-    # Change these
 
+    # TODO: 2014 and 2012
     years = [2020, 2018, 2016]
     district_types = ['REP', 'SEN']
+
     for year in years:
         for district_type in district_types:  # REP or SEN
             if year == 2020:
