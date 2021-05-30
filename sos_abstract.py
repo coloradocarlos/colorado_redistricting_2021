@@ -183,42 +183,23 @@ def sort_csv_by_district(csvfile):
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
 
-    # TODO: 2014 and 2012
-    years = [2020, 2018, 2016, 2014, 2012]
+    # Results by year: https://www.sos.state.co.us/pubs/elections/resultsData.html
+    # Note 1: some input CVS column headers were change from the original SOS files to normalize the names.
+    # Note 2: Office/Ballot Issue is sorted alphabetically for 2014 and 2012 and needs to be post processed.
+    # Note 3: 2012 is sorted by Precinct and was resorted in LibreOffice Calc by Office/Ballot Issue to process the districts in groups.
+    years = {
+        2020: {'csvin': '2020StateAbstractResultsReport.csv', 'csvin_precinct': '2020GEPrecinctLevelTurnoutPosted.csv'},
+        2018: {'csvin': '2018GeneralResults.csv', 'csvin_precinct': '2018GEPrecinctLevelTurnout.csv'},
+        2016: {'csvin': '2016GEstatewideAbstractResults.csv', 'csvin_precinct': '2016GeneralTurnoutPrecinctLevel.csv'},
+        2014: {'csvin': '2014GeneralPrecinctResults.csv', 'csvin_precinct': '2014GeneralPrecinctTurnout.csv'},
+        2012: {'csvin': '2012GeneralPrecinctLevelResults.csv', 'csvin_precinct': '2012GeneralPrecinctLevelTurnout.csv'},
+    }
     district_types = ['REP', 'SEN']
 
-    for year in years:
+    for year in years.keys():
         for district_type in district_types:  # REP or SEN
-            # Results by year: https://www.sos.state.co.us/pubs/elections/resultsData.html
-            if year == 2020:
-                # https://www.sos.state.co.us/pubs/elections/Results/2020/StateAbstractResultsReport.xlsx
-                csvin = './sos_files/2020StateAbstractResultsReport.csv'
-                # https://www.sos.state.co.us/pubs/elections/Results/2020/2020GEPrecinctLevelTurnoutPosted.xlsx
-                csvin_precinct = './sos_files/2020GEPrecinctLevelTurnoutPosted.csv'
-            elif year == 2018:
-                # https://www.sos.state.co.us/pubs/elections/Results/2018/2018GeneralResults.xlsx
-                csvin = './sos_files/2018GeneralResults.csv'
-                # https://www.sos.state.co.us/pubs/elections/Results/2018/2018GEPrecinctLevelTurnout.xlsx
-                csvin_precinct = './sos_files/2018GEPrecinctLevelTurnout.csv'
-            elif year == 2016:
-                # https://www.sos.state.co.us/pubs/elections/Results/2016/General/2016GEstatewideAbstractResults.xlsx
-                csvin = './sos_files/2016GEstatewideAbstractResults.csv'
-                # https://www.sos.state.co.us/pubs/elections/Results/2016/General/2016GeneralTurnoutPrecinctLevel.xlsx
-                csvin_precinct = './sos_files/2016GeneralTurnoutPrecinctLevel.csv'
-            elif year == 2014:
-                # Note: Office/Ballot Issue is sorted alphabetically
-                # https://www.sos.state.co.us/pubs/elections/Results/2014/2014GeneralPrecinctResults.xlsx
-                csvin = './sos_files/2014GeneralPrecinctResults.csv'
-                # https://www.sos.state.co.us/pubs/elections/Results/2014/2014GeneralPrecinctTurnout.xlsx
-                csvin_precinct = './sos_files/2014GeneralPrecinctTurnout.csv'
-            elif year == 2012:
-                # Note: Office/Ballot Issue is sorted alphabetically
-                # https://www.sos.state.co.us/pubs/elections/Results/2012/2012GeneralPrecinctLevelResults.xlsx
-                csvin = './sos_files/2012GeneralPrecinctLevelResults.csv'
-                # https://www.sos.state.co.us/pubs/elections/Results/2012/2012GeneralPrecinctLevelTurnout.xlsx
-                csvin_precinct = './sos_files/2012GeneralPrecinctLevelTurnout.csv'
-            else:
-                raise Exception(f"Invalid year: {year}")
+            csvin = "./sos_files/{csvin}".format(csvin=years[year]['csvin'])
+            csvin_precinct = "./sos_files/{csvin_precinct}".format(csvin_precinct=years[year]['csvin_precinct'])
 
             if district_type == 'REP':
                 csvout = f"./election_data/stateRepresentatives.{year}.csv"  # REP
