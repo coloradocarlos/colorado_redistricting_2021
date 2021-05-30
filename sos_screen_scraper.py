@@ -51,8 +51,9 @@ def process_election_file(htmlfile, csvfile):
             # Total
             # <td><strong><span class="ADAhidden">County </span>Total</strong></td>
             matches = re.match(r'<td>(?:<strong>)?<span class="ADAhidden">County </span>(?:<strong>)?([\w\s]+)(?:</strong>)?</td>', line)
-            if fields['district'] == 13 and not matches:
+            if not matches:
                 # Special case for 2012 District 13: <td><strong>Total</strong></td>
+                # Also special case for 2014 District 47 and District 60 with HTML formatting inconsistency
                 matches = re.match(r'<td>(?:<strong>)?([\w\s]+)(?:</strong>)?</td>', line)
             if matches:
                 if matches.groups()[0] == 'Total':

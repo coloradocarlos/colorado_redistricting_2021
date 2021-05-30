@@ -45,7 +45,7 @@ district,counties,registered_voters,ballots_cast,democrat,republican,other,total
 44,Douglas,60804,34829,9760,20719,2076,32555,0,1,0,1
 45,Douglas,63852,39641,9602,25528,1821,36951,0,1,0,1
 46,Pueblo,55995,32444,16243,14884,0,31127,1,0,0,0
-47,Otero - Pueblo,51856,29749,10059,18358,0,28417,0,1,0,1
+47,Fremont - Otero - Pueblo,51856,29749,10059,18358,0,28417,0,1,0,1
 48,Weld,55589,34064,0,23882,0,23882,0,1,0,1
 49,Larimer - Weld,66269,45169,0,28707,0,28707,0,1,0,1
 50,Weld,42441,17392,8322,7087,0,15409,1,0,0,0
@@ -58,7 +58,7 @@ district,counties,registered_voters,ballots_cast,democrat,republican,other,total
 57,Garfield - Moffat - Rio Blanco,47233,27424,0,18218,5431,23649,0,1,0,1
 58,Dolores - Montezuma - Montrose - San Miguel,53096,31088,0,21666,0,21666,0,1,0,1
 59,Archuleta - Gunnison - Hinsdale - La Plata - Ouray - San Juan,64336,35875,17110,17280,0,34390,0,1,0,0
-60,Chaffee - Custer - Park,54046,34733,0,24837,1236,26073,0,1,0,1
+60,Chaffee - Custer - Fremont - Park,54046,34733,0,24837,1236,26073,0,1,0,1
 61,Delta - Gunnison - Lake - Pitkin - Summit,66955,35491,17500,14455,1516,33471,1,0,0,0
 62,Alamosa - Conejos - Costilla - Huerfano - Mineral - Pueblo - Rio Grande - Saguache,51563,29182,16419,11376,0,27795,1,0,0,0
 63,Weld,54609,32189,9513,19754,0,29267,0,1,0,1
