@@ -154,9 +154,21 @@ def process_election_file(htmlfile, csvfile):
 
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
-    # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2016/general/stateRepresentatives.html
-    htmlfile = './sos_files/senate.2012.html'
-    csvfile = './election_data/stateSenate.2012.csv'
-    print(f"Processing {htmlfile}")
-    process_election_file(htmlfile, csvfile)
-    print(f"CSV written to {csvfile}")
+    years = [2018, 2016, 2014, 2012]
+    district_types = ['representatives', 'senate']
+    for year in years:
+        for district_type in district_types:
+            if year == 2018 or year == 2016:
+                # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2018/general/stateRepresentatives.html
+                # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2016/general/stateRepresentatives.html
+                htmlfile = './sos_files/state{district_type}.{year}.html'.format(district_type=district_type.title(), year=year)
+            elif year == 2014 or year == 2012:
+                # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2014/general/representatives.html
+                # https://www.sos.state.co.us/pubs/elections/Results/Abstract/2012/general/representatives.html
+                htmlfile = './sos_files/{district_type}.{year}.html'.format(district_type=district_type, year=year)
+            else:
+                raise Exception(f"Invalid year: {year}")
+            csvfile = './election_data/state{district_type}.{year}.csv'.format(district_type=district_type.title(), year=year)
+            print(f"Processing {htmlfile}")
+            process_election_file(htmlfile, csvfile)
+            print(f"CSV written to {csvfile}")
