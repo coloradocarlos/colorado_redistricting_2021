@@ -95,6 +95,8 @@ def match_total_row(row, year):
         return row['County'] == 'TOTAL'
     elif year == 2016:
         return row['Candidate/Judge/Ballot Issue Title'].endswith('TOTAL')
+    elif year == 2014:
+        return True
     else:
         raise Exception(f"Invalid year: {year}")
 
@@ -139,7 +141,7 @@ def process_election_file(csvin, csvout, precinct_data, district_type, year):
                             raise Exception("We already have a DEM winner!")
                     else:
                         raise Exception(f"Another party won in district {csvout_row['district']}!")
-                elif row['County'] != '' and row['County'] != 'TOTAL':
+                if row['County'] != '' and row['County'] != 'TOTAL':
                     county = row['County'].title()
                     if county not in county_list:
                         county_list.append(county)
@@ -148,27 +150,66 @@ def process_election_file(csvin, csvout, precinct_data, district_type, year):
                 csvout_row = init_row()
 
 
+def sort_csv_by_district(csvfile):
+    # Need to sort by district numerically because the SOS XLSX is sorted alphabetically this:
+    #  State Representative - District 1
+    #  State Representative - District 10
+    #  State Representative - District 11
+    #  ...
+    #  State Representative - District 2
+    #  State Representative - District 20
+    #  ...
+    election_results = None
+    # Read in unsorted CSV
+    with open(csvfile, 'r') as fp1:
+        csvreader = csv.DictReader(fp1)
+        election_results = list(csvreader)
+    # election_results is a list of OrderedDict's
+    # pp = pprint.PrettyPrinter()
+    # pp.pprint(election_results)
+
+    # Sort list by district numerically, not alphabetically
+    new_election_results = sorted(election_results, key=lambda x: int(x['district']))
+    # pp = pprint.PrettyPrinter()
+    # pp.pprint(new_election_results)
+
+    # Writer out sorted CSV
+    with open(csvfile, 'w') as fp2:
+        csvwriter = csv.DictWriter(fp2, fieldnames=new_election_results[0].keys())
+        csvwriter.writeheader()
+        csvwriter.writerows(new_election_results)
+
+
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
 
     # TODO: 2014 and 2012
-    years = [2020, 2018, 2016]
+    years = [2020, 2018, 2016, 2014]
     district_types = ['REP', 'SEN']
 
     for year in years:
         for district_type in district_types:  # REP or SEN
+            # Results by year: https://www.sos.state.co.us/pubs/elections/resultsData.html
             if year == 2020:
                 # https://www.sos.state.co.us/pubs/elections/Results/2020/StateAbstractResultsReport.xlsx
                 csvin = './sos_files/2020StateAbstractResultsReport.csv'
+                # https://www.sos.state.co.us/pubs/elections/Results/2020/2020GEPrecinctLevelTurnoutPosted.xlsx
                 csvin_precinct = './sos_files/2020GEPrecinctLevelTurnoutPosted.csv'
             elif year == 2018:
                 # https://www.sos.state.co.us/pubs/elections/Results/2018/2018GeneralResults.xlsx
                 csvin = './sos_files/2018GeneralResults.csv'
+                # https://www.sos.state.co.us/pubs/elections/Results/2018/2018GEPrecinctLevelTurnout.xlsx
                 csvin_precinct = './sos_files/2018GEPrecinctLevelTurnout.csv'
             elif year == 2016:
                 # https://www.sos.state.co.us/pubs/elections/Results/2016/General/2016GEstatewideAbstractResults.xlsx
                 csvin = './sos_files/2016GEstatewideAbstractResults.csv'
+                # https://www.sos.state.co.us/pubs/elections/Results/2016/General/2016GeneralTurnoutPrecinctLevel.xlsx
                 csvin_precinct = './sos_files/2016GeneralTurnoutPrecinctLevel.csv'
+            elif year == 2014:
+                # https://www.sos.state.co.us/pubs/elections/Results/2014/2014GeneralPrecinctResults.xlsx
+                csvin = './sos_files/2014GeneralPrecinctResults.csv'
+                # https://www.sos.state.co.us/pubs/elections/Results/2014/2014GeneralPrecinctTurnout.xlsx
+                csvin_precinct = './sos_files/2014GeneralPrecinctTurnout.csv'
             else:
                 raise Exception(f"Invalid year: {year}")
 
@@ -184,3 +225,8 @@ if __name__ == "__main__":
             print(f"Processing {csvin}")
             process_election_file(csvin, csvout, precinct_data, district_type, year)
             print(f"CSV written to {csvout}")
+
+            # We are not done. Need to sort the output for certain years
+            if year == 2014:
+                print(f"Sorting {csvout}")
+                sort_csv_by_district(csvout)
