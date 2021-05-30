@@ -57,6 +57,18 @@ def emit_row(csvwriter, csvout_row, county_list, precinct_data):
     csvout_row['ballots_cast'] = precinct_data[district]['ballots_cast']
     csvout_row['registered_voters'] = precinct_data[district]['total_voters']
     csvout_row['total'] = csvout_row['democrat'] + csvout_row['republican'] + csvout_row['other']
+
+    # For 2018 data, we have to decide who the winner is, unlike 2020 data
+    if not any([csvout_row['dem_winner'], csvout_row['rep_winner']]):
+        if csvout_row['democrat'] > csvout_row['republican']:
+            csvout_row['dem_winner'] = 1
+            csvout_row['rep_winner'] = 0
+        elif csvout_row['republican'] > csvout_row['democrat']:
+            csvout_row['dem_winner'] = 0
+            csvout_row['rep_winner'] = 1
+        else:
+            raise Exception("Election tie!")
+
     # Is this a landslide district?
     landslide_percentage = 0.6  # 60%
     if csvout_row['dem_winner'] == 1:
@@ -90,7 +102,7 @@ def process_election_file(csvin, csvout, precinct_data, district_type):
                         csvout_row = init_row()
                         county_list = []
                     csvout_row['district'] = new_district
-                if row['Candidate/Judge/Ballot Issue Title'].endswith('Total Votes'):
+                if row['Candidate/Judge/Ballot Issue Title'].endswith('Total Votes') or row['County'] == 'TOTAL':
                     votes = locale.atoi(row['Yes Votes/Percentage'])
                     if row['Party'] == 'Democratic Party':
                         csvout_row['democrat'] += votes
@@ -109,11 +121,12 @@ def process_election_file(csvin, csvout, precinct_data, district_type):
                             raise Exception("We already have another DEM winner!")
                     else:
                         raise Exception(f"Another party won in district {csvout_row['district']}!")
-                elif row['County'] != '':
+                elif row['County'] != '' and row['County'] != 'TOTAL':
                     county = row['County'].title()
                     if county not in county_list:
                         county_list.append(county)
-            elif csvout_row['district'] == 65:
+            elif (district_type == 'REP' and csvout_row['district'] == 65) or \
+                 (district_type == 'SEN' and csvout_row['district'] == 35):
                 emit_row(csvwriter, csvout_row, county_list, precinct_data)
                 csvout_row = init_row()
 
@@ -121,8 +134,8 @@ def process_election_file(csvin, csvout, precinct_data, district_type):
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
     # https://www.sos.state.co.us/pubs/elections/Results/2020/StateAbstractResultsReport.xlsx
-    csvin = './sos_files/2020StateAbstractResultsReport.csv'
-    csvin_precinct = './sos_files/2020GEPrecinctLevelTurnoutPosted.csv'
+    csvin = './sos_files/2020StateAbstractResultsReport.csv'  # 2018GeneralResults.csv
+    csvin_precinct = './sos_files/2020GEPrecinctLevelTurnoutPosted.csv'  # 2018GEPrecinctLevelTurnout.csv
     district_type = 'SEN'  # REP or SEN
     if district_type == 'REP':
         csvout = './election_data/stateRepresentatives.2020.csv'  # REP
