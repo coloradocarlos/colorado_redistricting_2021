@@ -95,10 +95,10 @@ def match_total_row(row, year):
         return row['County'] == 'TOTAL'
     elif year == 2016:
         return row['Candidate/Judge/Ballot Issue Title'].endswith('TOTAL')
-    elif year == 2014:
+    elif year == 2014 or year == 2012:
         return True
     else:
-        raise Exception(f"Invalid year: {year}")
+        raise Exception(f"Invalid year for match_total_row: {year}")
 
 
 def process_election_file(csvin, csvout, precinct_data, district_type, year):
@@ -184,7 +184,7 @@ if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
 
     # TODO: 2014 and 2012
-    years = [2020, 2018, 2016, 2014]
+    years = [2020, 2018, 2016, 2014, 2012]
     district_types = ['REP', 'SEN']
 
     for year in years:
@@ -206,10 +206,17 @@ if __name__ == "__main__":
                 # https://www.sos.state.co.us/pubs/elections/Results/2016/General/2016GeneralTurnoutPrecinctLevel.xlsx
                 csvin_precinct = './sos_files/2016GeneralTurnoutPrecinctLevel.csv'
             elif year == 2014:
+                # Note: Office/Ballot Issue is sorted alphabetically
                 # https://www.sos.state.co.us/pubs/elections/Results/2014/2014GeneralPrecinctResults.xlsx
                 csvin = './sos_files/2014GeneralPrecinctResults.csv'
                 # https://www.sos.state.co.us/pubs/elections/Results/2014/2014GeneralPrecinctTurnout.xlsx
                 csvin_precinct = './sos_files/2014GeneralPrecinctTurnout.csv'
+            elif year == 2012:
+                # Note: Office/Ballot Issue is sorted alphabetically
+                # https://www.sos.state.co.us/pubs/elections/Results/2012/2012GeneralPrecinctLevelResults.xlsx
+                csvin = './sos_files/2012GeneralPrecinctLevelResults.csv'
+                # https://www.sos.state.co.us/pubs/elections/Results/2012/2012GeneralPrecinctLevelTurnout.xlsx
+                csvin_precinct = './sos_files/2012GeneralPrecinctLevelTurnout.csv'
             else:
                 raise Exception(f"Invalid year: {year}")
 
@@ -227,6 +234,6 @@ if __name__ == "__main__":
             print(f"CSV written to {csvout}")
 
             # We are not done. Need to sort the output for certain years
-            if year == 2014:
+            if year in [2014, 2012]:
                 print(f"Sorting {csvout}")
                 sort_csv_by_district(csvout)
