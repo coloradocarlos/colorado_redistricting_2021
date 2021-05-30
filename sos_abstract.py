@@ -188,11 +188,11 @@ if __name__ == "__main__":
     # Note 2: Office/Ballot Issue is sorted alphabetically for 2014 and 2012 and needs to be post processed.
     # Note 3: 2012 is sorted by Precinct and was resorted in LibreOffice Calc by Office/Ballot Issue to process the districts in groups.
     years = {
-        2020: {'csvin': '2020StateAbstractResultsReport.csv', 'csvin_precinct': '2020GEPrecinctLevelTurnoutPosted.csv'},
-        2018: {'csvin': '2018GeneralResults.csv', 'csvin_precinct': '2018GEPrecinctLevelTurnout.csv'},
-        2016: {'csvin': '2016GEstatewideAbstractResults.csv', 'csvin_precinct': '2016GeneralTurnoutPrecinctLevel.csv'},
-        2014: {'csvin': '2014GeneralPrecinctResults.csv', 'csvin_precinct': '2014GeneralPrecinctTurnout.csv'},
-        2012: {'csvin': '2012GeneralPrecinctLevelResults.csv', 'csvin_precinct': '2012GeneralPrecinctLevelTurnout.csv'},
+        2020: {'csvin': '2020StateAbstractResultsReport.csv', 'csvin_precinct': '2020GEPrecinctLevelTurnoutPosted.csv', 'post_sort': False},
+        2018: {'csvin': '2018GeneralResults.csv', 'csvin_precinct': '2018GEPrecinctLevelTurnout.csv', 'post_sort': False},
+        2016: {'csvin': '2016GEstatewideAbstractResults.csv', 'csvin_precinct': '2016GeneralTurnoutPrecinctLevel.csv', 'post_sort': False},
+        2014: {'csvin': '2014GeneralPrecinctResults.csv', 'csvin_precinct': '2014GeneralPrecinctTurnout.csv', 'post_sort': True},
+        2012: {'csvin': '2012GeneralPrecinctLevelResults.csv', 'csvin_precinct': '2012GeneralPrecinctLevelTurnout.csv', 'post_sort': True},
     }
     district_types = ['REP', 'SEN']
 
@@ -215,6 +215,6 @@ if __name__ == "__main__":
             print(f"CSV written to {csvout}")
 
             # We are not done. Need to sort the output for certain years
-            if year in [2014, 2012]:
+            if years[year]['post_sort']:
                 print(f"Sorting {csvout}")
                 sort_csv_by_district(csvout)
