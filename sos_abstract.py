@@ -125,24 +125,33 @@ def process_election_file(csvin, csvout, precinct_data, district_type):
                     county = row['County'].title()
                     if county not in county_list:
                         county_list.append(county)
-            elif (district_type == 'REP' and csvout_row['district'] == 65) or \
-                 (district_type == 'SEN' and csvout_row['district'] == 35):
+            elif csvout_row['district'] != 0:
                 emit_row(csvwriter, csvout_row, county_list, precinct_data)
                 csvout_row = init_row()
 
 
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
-    # https://www.sos.state.co.us/pubs/elections/Results/2020/StateAbstractResultsReport.xlsx
-    csvin = './sos_files/2020StateAbstractResultsReport.csv'  # 2018GeneralResults.csv
-    csvin_precinct = './sos_files/2020GEPrecinctLevelTurnoutPosted.csv'  # 2018GEPrecinctLevelTurnout.csv
+    # Change these
+    year = 2018  # 2020, 2018
     district_type = 'SEN'  # REP or SEN
+
+    if year == 2020:
+        # https://www.sos.state.co.us/pubs/elections/Results/2020/StateAbstractResultsReport.xlsx
+        csvin = './sos_files/2020StateAbstractResultsReport.csv'
+        csvin_precinct = './sos_files/2020GEPrecinctLevelTurnoutPosted.csv'
+    elif year == 2018:
+        # https://www.sos.state.co.us/pubs/elections/Results/2018/2018GeneralResults.xlsx
+        csvin = './sos_files/2018GeneralResults.csv'
+        csvin_precinct = './sos_files/2018GEPrecinctLevelTurnout.csv'
+
     if district_type == 'REP':
-        csvout = './election_data/stateRepresentatives.2020.csv'  # REP
+        csvout = f"./election_data/stateRepresentatives.{year}.csv"  # REP
     elif district_type == 'SEN':
-        csvout = './election_data/stateSenate.2020.csv'  # SEN
+        csvout = f"./election_data/stateSenate.{year}.csv"  # SEN
     else:
         raise Exception(f"Invalid district_type {district_type}")
+
     print(f"Processing {csvin_precinct}")
     precinct_data = process_precinct_file(csvin_precinct, district_type)  # REP or SEN
     print(f"Processing {csvin}")
