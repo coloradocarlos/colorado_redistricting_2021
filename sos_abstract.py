@@ -24,7 +24,7 @@ def process_precinct_file(csvin_precinct, district_type):
                 if district_type == 'REP':
                     district = int(matches.groups()[2])
                 elif district_type == 'SEN':
-                    district = int(matches.groups()[2])
+                    district = int(matches.groups()[1])
                 else:
                     raise Exception(f"Invalid district_type {district_type}")
                 county_number = int(matches.groups()[3])
@@ -70,7 +70,7 @@ def emit_row(csvwriter, csvout_row, county_list, precinct_data):
     csvwriter.writerow(csvout_row)
 
 
-def process_election_file(csvin, csvout, precinct_data):
+def process_election_file(csvin, csvout, precinct_data, district_type):
     with open(csvin, 'r') as fp1, open(csvout, 'w') as fp2:
         csvreader = csv.DictReader(fp1)
         csvout_row = init_row()
@@ -78,7 +78,10 @@ def process_election_file(csvin, csvout, precinct_data):
         csvwriter.writeheader()
         county_list = []
         for row in csvreader:
-            matches = re.match(r'^State Representative - District (\d+)$', row['Office/Ballot Issue'])
+            if district_type == 'REP':
+                matches = re.match(r'^State Representative - District (\d+)$', row['Office/Ballot Issue'])
+            elif district_type == 'SEN':
+                matches = re.match(r'^State Senate - District (\d+)$', row['Office/Ballot Issue'])
             if matches:
                 new_district = int(matches.groups()[0])
                 if new_district != csvout_row['district']:
@@ -120,9 +123,15 @@ if __name__ == "__main__":
     # https://www.sos.state.co.us/pubs/elections/Results/2020/StateAbstractResultsReport.xlsx
     csvin = './sos_files/2020StateAbstractResultsReport.csv'
     csvin_precinct = './sos_files/2020GEPrecinctLevelTurnoutPosted.csv'
-    csvout = './election_data/stateRepresentatives.2020.csv'
+    district_type = 'SEN'  # REP or SEN
+    if district_type == 'REP':
+        csvout = './election_data/stateRepresentatives.2020.csv'  # REP
+    elif district_type == 'SEN':
+        csvout = './election_data/stateSenate.2020.csv'  # SEN
+    else:
+        raise Exception(f"Invalid district_type {district_type}")
     print(f"Processing {csvin_precinct}")
-    precinct_data = process_precinct_file(csvin_precinct, 'REP')  # REP or SEN
+    precinct_data = process_precinct_file(csvin_precinct, district_type)  # REP or SEN
     print(f"Processing {csvin}")
-    process_election_file(csvin, csvout, precinct_data)
+    process_election_file(csvin, csvout, precinct_data, district_type)  # REP or SEN
     print(f"CSV written to {csvout}")
