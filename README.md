@@ -7,6 +7,10 @@ To learn more, go to https://redistricting.colorado.gov
 
 Contact: Carlos Perez <commissioner.carlos.perez@gmail.com>
 
+## Datasets
+
+Need Colorado election data that has been normalized from the SOS website? Just go to [election_data](election_data) folder for the CSV files.
+
 ## Screen Scrapper for SoS Election Archives
 
 Upstream data: https://www.sos.state.co.us/pubs/elections/Results/Archives.html
