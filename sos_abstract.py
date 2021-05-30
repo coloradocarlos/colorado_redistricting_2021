@@ -65,15 +65,15 @@ def emit_row(csvwriter, csvout_row, county_list, precinct_data):
 
     # For 2018 and 2016 data, we have to decide who the winner is, unlike 2020 data
     if not any([csvout_row['dem_winner'], csvout_row['rep_winner']]):
-        if csvout_row['democrat'] > csvout_row['republican']:
+        if csvout_row['democrat'] > csvout_row['republican'] and csvout_row['democrat'] > csvout_row['other']:
             csvout_row['dem_winner'] = 1
             csvout_row['rep_winner'] = 0
-        elif csvout_row['republican'] > csvout_row['democrat']:
+        elif csvout_row['republican'] > csvout_row['democrat'] and csvout_row['republican'] > csvout_row['other']:
             csvout_row['dem_winner'] = 0
             csvout_row['rep_winner'] = 1
         else:
             print(csvout_row)
-            raise Exception("Election tie!")
+            raise Exception("Election tie or other won!")
 
     # Is this a landslide district?
     landslide_percentage = 0.6  # 60%
@@ -128,14 +128,15 @@ def process_election_file(csvin, csvout, precinct_data, district_type, year):
                     else:
                         csvout_row['other'] += votes
                 elif row['Candidate/Judge/Ballot Issue Title'].endswith('(WINNER)'):
+                    # This match applies to 2020 data
                     if row['Party'] == 'Democratic Party':
                         csvout_row['dem_winner'] = 1
                         if csvout_row['rep_winner'] == 1:
-                            raise Exception("We already have another REP winner!")
+                            raise Exception("We already have a REP winner!")
                     elif row['Party'] == 'Republican Party':
                         csvout_row['rep_winner'] = 1
                         if csvout_row['dem_winner'] == 1:
-                            raise Exception("We already have another DEM winner!")
+                            raise Exception("We already have a DEM winner!")
                     else:
                         raise Exception(f"Another party won in district {csvout_row['district']}!")
                 elif row['County'] != '' and row['County'] != 'TOTAL':

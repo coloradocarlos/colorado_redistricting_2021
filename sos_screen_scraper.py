@@ -114,14 +114,14 @@ def process_election_file(htmlfile, csvfile):
                 fields['total'] = total
 
                 # Determine party that prevailed
-                if fields['democrat'] > fields['republican']:
+                if fields['democrat'] > fields['republican'] and fields['democrat'] > fields['other']:
                     fields['dem_winner'] = 1
                     fields['rep_winner'] = 0
-                elif fields['republican'] > fields['democrat']:
+                elif fields['republican'] > fields['democrat'] and fields['republican'] > fields['other']:
                     fields['dem_winner'] = 0
                     fields['rep_winner'] = 1
                 else:
-                    raise Exception("Election tie!")
+                    raise Exception("Election tie or other won!")
 
                 # Is this a landslide district?
                 landslide_percentage = 0.6  # 60%
