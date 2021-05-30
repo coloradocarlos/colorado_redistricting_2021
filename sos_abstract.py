@@ -37,8 +37,8 @@ def process_precinct_file(csvin_precinct, district_type):
                 if county_map[county_number] != county:
                     raise Exception(f"County ({county}) or county_number ({county_number}) changed unexpectedly for precinct {row['Precinct']}")
                 # Update totals
-                precinct_data[district]['total_voters'] += int(row['Total Voters'])
-                precinct_data[district]['ballots_cast'] += int(row['Ballots Cast'])
+                precinct_data[district]['total_voters'] += locale.atoi(row['Total Voters'])
+                precinct_data[district]['ballots_cast'] += locale.atoi(row['Ballots Cast'])
             else:
                 raise Exception(r"Unable to parse precinct number: {row['Precinct']}")
         # pp = pprint.PrettyPrinter()
@@ -58,7 +58,7 @@ def emit_row(csvwriter, csvout_row, county_list, precinct_data):
     csvout_row['registered_voters'] = precinct_data[district]['total_voters']
     csvout_row['total'] = csvout_row['democrat'] + csvout_row['republican'] + csvout_row['other']
 
-    # For 2018 data, we have to decide who the winner is, unlike 2020 data
+    # For 2018 and 2016 data, we have to decide who the winner is, unlike 2020 data
     if not any([csvout_row['dem_winner'], csvout_row['rep_winner']]):
         if csvout_row['democrat'] > csvout_row['republican']:
             csvout_row['dem_winner'] = 1
@@ -67,6 +67,7 @@ def emit_row(csvwriter, csvout_row, county_list, precinct_data):
             csvout_row['dem_winner'] = 0
             csvout_row['rep_winner'] = 1
         else:
+            print(csvout_row)
             raise Exception("Election tie!")
 
     # Is this a landslide district?
@@ -82,7 +83,18 @@ def emit_row(csvwriter, csvout_row, county_list, precinct_data):
     csvwriter.writerow(csvout_row)
 
 
-def process_election_file(csvin, csvout, precinct_data, district_type):
+def match_total_row(row, year):
+    if year == 2020:
+        return row['Candidate/Judge/Ballot Issue Title'].endswith('Total Votes')
+    elif year == 2018:
+        return row['County'] == 'TOTAL'
+    elif year == 2016:
+        return row['Candidate/Judge/Ballot Issue Title'].endswith('TOTAL')
+    else:
+        raise Exception(f"Invalid year: {year}")
+
+
+def process_election_file(csvin, csvout, precinct_data, district_type, year):
     with open(csvin, 'r') as fp1, open(csvout, 'w') as fp2:
         csvreader = csv.DictReader(fp1)
         csvout_row = init_row()
@@ -102,7 +114,7 @@ def process_election_file(csvin, csvout, precinct_data, district_type):
                         csvout_row = init_row()
                         county_list = []
                     csvout_row['district'] = new_district
-                if row['Candidate/Judge/Ballot Issue Title'].endswith('Total Votes') or row['County'] == 'TOTAL':
+                if match_total_row(row, year):
                     votes = locale.atoi(row['Yes Votes/Percentage'])
                     if row['Party'] == 'Democratic Party':
                         csvout_row['democrat'] += votes
@@ -133,27 +145,35 @@ def process_election_file(csvin, csvout, precinct_data, district_type):
 if __name__ == "__main__":
     locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')  # For parsing numbers with comma separators
     # Change these
-    year = 2018  # 2020, 2018
-    district_type = 'SEN'  # REP or SEN
 
-    if year == 2020:
-        # https://www.sos.state.co.us/pubs/elections/Results/2020/StateAbstractResultsReport.xlsx
-        csvin = './sos_files/2020StateAbstractResultsReport.csv'
-        csvin_precinct = './sos_files/2020GEPrecinctLevelTurnoutPosted.csv'
-    elif year == 2018:
-        # https://www.sos.state.co.us/pubs/elections/Results/2018/2018GeneralResults.xlsx
-        csvin = './sos_files/2018GeneralResults.csv'
-        csvin_precinct = './sos_files/2018GEPrecinctLevelTurnout.csv'
+    years = [2020, 2018, 2016]
+    district_types = ['REP', 'SEN']
+    for year in years:
+        for district_type in district_types:  # REP or SEN
+            if year == 2020:
+                # https://www.sos.state.co.us/pubs/elections/Results/2020/StateAbstractResultsReport.xlsx
+                csvin = './sos_files/2020StateAbstractResultsReport.csv'
+                csvin_precinct = './sos_files/2020GEPrecinctLevelTurnoutPosted.csv'
+            elif year == 2018:
+                # https://www.sos.state.co.us/pubs/elections/Results/2018/2018GeneralResults.xlsx
+                csvin = './sos_files/2018GeneralResults.csv'
+                csvin_precinct = './sos_files/2018GEPrecinctLevelTurnout.csv'
+            elif year == 2016:
+                # https://www.sos.state.co.us/pubs/elections/Results/2016/General/2016GEstatewideAbstractResults.xlsx
+                csvin = './sos_files/2016GEstatewideAbstractResults.csv'
+                csvin_precinct = './sos_files/2016GeneralTurnoutPrecinctLevel.csv'
+            else:
+                raise Exception(f"Invalid year: {year}")
 
-    if district_type == 'REP':
-        csvout = f"./election_data/stateRepresentatives.{year}.csv"  # REP
-    elif district_type == 'SEN':
-        csvout = f"./election_data/stateSenate.{year}.csv"  # SEN
-    else:
-        raise Exception(f"Invalid district_type {district_type}")
+            if district_type == 'REP':
+                csvout = f"./election_data/stateRepresentatives.{year}.csv"  # REP
+            elif district_type == 'SEN':
+                csvout = f"./election_data/stateSenate.{year}.csv"  # SEN
+            else:
+                raise Exception(f"Invalid district_type {district_type}")
 
-    print(f"Processing {csvin_precinct}")
-    precinct_data = process_precinct_file(csvin_precinct, district_type)  # REP or SEN
-    print(f"Processing {csvin}")
-    process_election_file(csvin, csvout, precinct_data, district_type)  # REP or SEN
-    print(f"CSV written to {csvout}")
+            print(f"Processing {csvin_precinct}")
+            precinct_data = process_precinct_file(csvin_precinct, district_type)
+            print(f"Processing {csvin}")
+            process_election_file(csvin, csvout, precinct_data, district_type, year)
+            print(f"CSV written to {csvout}")
