@@ -73,7 +73,7 @@ def init_results_dict(year):
         for district_type in district_types.keys():
             district_results = OrderedDict()
             for district in district_types[district_type]['districts']:
-                district_results[district] = dict(democrat=0, republican=0, other=0)
+                district_results[district] = dict(county_list=[], democrat=0, republican=0, other=0)
             results[race][district_type] = district_results
     return results
 
@@ -102,17 +102,18 @@ def write_csv_files(year, results):
     Write the results for each year and statewide office by district type
     For 2020, there are 2 statewide offices, 3 district types, for a total of 6 CSV files
     """
-    header = ('district', 'democrat', 'republican', 'other')
+    header = ('district', 'counties', 'democrat', 'republican', 'other')
     for race in results.keys():
         for district_type in results[race].keys():
             csvout = f"./election_data/{year}_{race}_by_{district_type}.csv"
             print(f"Writing {csvout}")
             with open(csvout, 'w') as fp2:
-                csvwriter = csv.DictWriter(fp2, fieldnames=header)
+                csvwriter = csv.DictWriter(fp2, fieldnames=header, extrasaction='ignore')
                 csvwriter.writeheader()
                 for district_number in results[race][district_type].keys():
                     row = results[race][district_type][district_number]
                     row['district'] = district_number
+                    row['counties'] = ' - '.join(row['county_list'])
                     csvwriter.writerow(row)
 
 
@@ -134,8 +135,13 @@ def process_precinct_level_results(year, csvin):
                         party = 'republican'
                     else:
                         party = 'other'
-                    results[race_match][district_type][district_number][party] += locale.atoi(row['Candidate Votes'])
-        # pp.pprint(results)
+                    # Update vote totals for this district
+                    results_row = results[race_match][district_type][district_number]
+                    results_row[party] += locale.atoi(row['Candidate Votes'])
+                    # Update county list for this district
+                    if row['County'] not in results_row['county_list']:
+                        results_row['county_list'].append(row['County'])
+        # After processing all rows in the precinct level CSV, output the results by district
         write_csv_files(year, results)
 
 
