@@ -33,7 +33,11 @@ district_types = {
     'co_house': {
         'districts': tuple(range(1, 66)),  # 65 state house districts
         'precinct_match_group_number': 2,  # for regex
-    }
+    },
+    'co_county': {
+        'districts': tuple(range(1, 65)),  # 64 counties
+        'precinct_match_group_number': 3,  # for regex
+    },
 }
 
 # Define the statewide races for each year
@@ -64,7 +68,8 @@ def init_results_dict(year):
             2: {'democrat': 0, ...}},
             3: ...
         'co_senate': ...,
-        'co_house': ...
+        'co_house': ...,
+        'co_county': ...
     'us_senate': ...,
     }
     """
@@ -86,6 +91,9 @@ def precinct_number_matcher(precinct_number):
     # • Fourth and fifth digits – State Representative District
     # • Sixth and seventh digits – County Number
     # • Last three digits – Precinct
+
+    # County Number (ID #) can be found here: https://www.sos.state.co.us/pubs/elections/Resources/files/CountyClerkRosterWebsite.pdf
+
     matches = re.match(r'^(\d{1})(\d{2})(\d{2})(\d{2})(\d{3})$', precinct_number)
     if matches:
         # Need to lookup the group number, 0 = Congressional District, 1 = State Senate, 2 = State Representative
@@ -93,7 +101,7 @@ def precinct_number_matcher(precinct_number):
         for district_type in district_types.keys():
             group_number = district_types[district_type]['precinct_match_group_number']
             precinct_dict[district_type] = int(matches.groups()[group_number])
-        # Example: {'us_house': 1, 'co_senate': 2, 'co_house': 3}
+        # Example: {'us_house': 1, 'co_senate': 2, 'co_house': 3, 'co_county': 4}
         return precinct_dict
     else:
         raise Exception(f"Unable to match precinct number {precinct_number}!")
@@ -102,7 +110,7 @@ def precinct_number_matcher(precinct_number):
 def write_csv_files(year, results):
     """
     Write the results for each year and statewide office by district type
-    For 2020, there are 2 statewide offices, 3 district types, for a total of 6 CSV files
+    For 2020, there are 2 statewide offices, 4 district types, for a total of 8 CSV files
     """
     header = ('district', 'counties', 'democrat', 'republican', 'other')
     for race in results.keys():
@@ -129,9 +137,9 @@ def process_precinct_level_results(year, csvin):
             # race_match is 'us_president' or 'us_senator'
             race_match = race_matcher(year, row)
             if race_match:
-                # district_numbers is a dict parsed from Precinct: {'us_house': 1, 'co_senate': 2, 'co_house': 3}
+                # district_numbers is a dict parsed from Precinct: {'us_house': 1, 'co_senate': 2, 'co_house': 3, 'co_county': 4}
                 district_numbers = precinct_number_matcher(row['Precinct'])
-                # district_type will be 'us_house', 'co_senate', or 'co_house'
+                # district_type will be 'us_house', 'co_senate', 'co_house', 'co_county'
                 for district_type in results[race_match]:
                     if row['Party'] == 'Democratic Party':
                         party = 'democrat'
