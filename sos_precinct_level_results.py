@@ -48,6 +48,7 @@ statewide_races_by_year = {
 def race_matcher(year, row):
     for race in statewide_races_by_year[year].keys():
         if row['Office/Issue/Judgeship'] == statewide_races_by_year[year][race]:
+            # Return 'us_president' or 'us_senator'
             return race
     return None
 
@@ -92,6 +93,7 @@ def precinct_number_matcher(precinct_number):
         for district_type in district_types.keys():
             group_number = district_types[district_type]['precinct_match_group_number']
             precinct_dict[district_type] = int(matches.groups()[group_number])
+        # Example: {'us_house': 1, 'co_senate': 2, 'co_house': 3}
         return precinct_dict
     else:
         raise Exception(f"Unable to match precinct number {precinct_number}!")
@@ -124,17 +126,21 @@ def process_precinct_level_results(year, csvin):
     with open(csvin, 'r') as fp1:
         csvreader = csv.DictReader(fp1)
         for row in csvreader:
+            # race_match is 'us_president' or 'us_senator'
             race_match = race_matcher(year, row)
             if race_match:
+                # district_numbers is a dict parsed from Precinct: {'us_house': 1, 'co_senate': 2, 'co_house': 3}
                 district_numbers = precinct_number_matcher(row['Precinct'])
+                # district_type will be 'us_house', 'co_senate', or 'co_house'
                 for district_type in results[race_match]:
-                    district_number = district_numbers[district_type]
                     if row['Party'] == 'Democratic Party':
                         party = 'democrat'
                     elif row['Party'] == 'Republican Party':
                         party = 'republican'
                     else:
                         party = 'other'
+                    # district_number depends on type
+                    district_number = district_numbers[district_type]
                     # Update vote totals for this district
                     results_row = results[race_match][district_type][district_number]
                     results_row[party] += locale.atoi(row['Candidate Votes'])
