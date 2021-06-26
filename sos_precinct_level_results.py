@@ -53,6 +53,23 @@ statewide_races_by_year = {
         'attorney_general': r'Attorney General',
         'regent_at_large': r'Regent Of The University Of Colorado - At Large',
     },
+    2016: {
+        'us_president': r'President/Vice President',
+        'us_senator': r'United States Senator',
+        'regent_at_large': r'Regent Of The University Of Colorado - At Large',
+    },
+}
+
+# These are precincts that were provisional and not assigned a precinct number. Let's make an educated guess based on the SOS file.
+provisional_precincts = {
+    2016: {
+        'Larimer': {
+            'us_house': 2,
+            'co_senate': 14,
+            'co_house': 49,
+            'co_county': 35,
+        }
+    }
 }
 
 
@@ -91,7 +108,7 @@ def init_results_dict(year):
     return results
 
 
-def precinct_number_matcher(precinct_number):
+def precinct_number_matcher(precinct_number, year, county):
     # https://www.sos.state.co.us/pubs/elections/FAQs/VoterFAQs.html
     # • First digit – Congressional District
     # • Second and third digits – State Senate District
@@ -109,6 +126,12 @@ def precinct_number_matcher(precinct_number):
             group_number = district_types[district_type]['precinct_match_group_number']
             precinct_dict[district_type] = int(matches.groups()[group_number])
         # Example: {'us_house': 1, 'co_senate': 2, 'co_house': 3, 'co_county': 4}
+        return precinct_dict
+    elif precinct_number == 'Provisional':
+        # For provisional precincts, we use the County name and Year to determine the districts they voted in
+        precinct_dict = dict()
+        for district_type in district_types.keys():
+            precinct_dict[district_type] = provisional_precincts[year][county][district_type]
         return precinct_dict
     else:
         raise Exception(f"Unable to match precinct number {precinct_number}!")
@@ -145,7 +168,7 @@ def process_precinct_level_results(year, csvin):
             race_match = race_matcher(year, row)
             if race_match:
                 # district_numbers is a dict parsed from Precinct: {'us_house': 1, 'co_senate': 2, 'co_house': 3, 'co_county': 4}
-                district_numbers = precinct_number_matcher(row['Precinct'])
+                district_numbers = precinct_number_matcher(row['Precinct'], year, row['County'])
                 # district_type will be 'us_house', 'co_senate', 'co_house', 'co_county'
                 for district_type in results[race_match]:
                     if row['Party'] == 'Democratic Party':
@@ -172,6 +195,7 @@ if __name__ == "__main__":
     years = {
         2020: {'csvin': '2020GEPrecinctLevelResultsPosted.csv'},
         2018: {'csvin': '2018GEPrecinctLevelResults.csv'},
+        2016: {'csvin': '2016GeneralResultsPrecinctLevel.csv'},
     }
 
     for year in years.keys():
