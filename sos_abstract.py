@@ -202,9 +202,9 @@ if __name__ == "__main__":
             csvin_precinct = "./sos_files/{csvin_precinct}".format(csvin_precinct=years[year]['csvin_precinct'])
 
             if district_type == 'REP':
-                csvout = f"./election_data/stateRepresentatives.{year}.csv"  # REP
+                csvout = f"./election_data/{year}/stateRepresentatives.{year}.csv"  # REP
             elif district_type == 'SEN':
-                csvout = f"./election_data/stateSenate.{year}.csv"  # SEN
+                csvout = f"./election_data/{year}/stateSenate.{year}.csv"  # SEN
             else:
                 raise Exception(f"Invalid district_type {district_type}")
 

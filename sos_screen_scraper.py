@@ -169,7 +169,7 @@ if __name__ == "__main__":
                 htmlfile = './sos_files/{district_type}.{year}.html'.format(district_type=district_type, year=year)
             else:
                 raise Exception(f"Invalid year: {year}")
-            csvfile = './election_data/state{district_type}.{year}.csv'.format(district_type=district_type.title(), year=year)
+            csvfile = './election_data/{year}/state{district_type}.{year}.csv'.format(district_type=district_type.title(), year=year)
             print(f"Processing {htmlfile}")
             process_election_file(htmlfile, csvfile)
             print(f"CSV written to {csvfile}")
