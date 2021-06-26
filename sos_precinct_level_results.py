@@ -58,24 +58,71 @@ statewide_races_by_year = {
         'us_senator': r'United States Senator',
         'regent_at_large': r'Regent Of The University Of Colorado - At Large',
     },
+    2014: {
+        'governor': r'Governor/Lieutenant Governor',
+        'sec_of_state': r'Secretary of State',
+        'treasurer': r'Treasurer',
+        'attorney_general': r'Attorney General',
+    },
 }
 
-# These are precincts that were provisional and not assigned a precinct number. Let's make an educated guess based on the SOS file.
+# These are low count precincts that are provisional and not assigned a precinct number presumably to preserve the privacy of the voters.
+# Let's make an educated guess based on the contents of the SOS file.
 provisional_precincts = {
     2016: {
         'Larimer': {
             'us_house': 2,
-            'co_senate': 14,
+            'co_senate': 14,  # Could also be 52, 53
             'co_house': 49,
             'co_county': 35,
-        }
+        },
+    },
+    2014: {
+        'Larimer': {
+            'us_house': 2,
+            'co_senate': 15,
+            'co_house': 49,  # Could also be 52, 53
+            'co_county': 35,
+        },
+        'Summit': {
+            'us_house': 2,
+            'co_senate': 8,
+            'co_house': 61,
+            'co_county': 59,
+        },
+        'Rio Grande': {
+            'us_house': 3,
+            'co_senate': 35,
+            'co_house': 62,
+            'co_county': 53,
+        },
+    },
+}
+
+# SOS election results column names changed over time for some reason
+csv_column_names = {
+    2020: {
+        'office_column_name': 'Office/Issue/Judgeship',
+        'vote_count_column_name': 'Candidate Votes',
+    },
+    2018: {
+        'office_column_name': 'Office/Issue/Judgeship',
+        'vote_count_column_name': 'Candidate Votes',
+    },
+    2016: {
+        'office_column_name': 'Office/Issue/Judgeship',
+        'vote_count_column_name': 'Candidate Votes',
+    },
+    2014: {
+        'office_column_name': 'Office/Ballot Issue',
+        'vote_count_column_name': 'Yes Votes/Percentage',
     }
 }
 
 
 def race_matcher(year, row):
     for race in statewide_races_by_year[year].keys():
-        if row['Office/Issue/Judgeship'] == statewide_races_by_year[year][race]:
+        if row[csv_column_names[year]['office_column_name']] == statewide_races_by_year[year][race]:
             # Return 'us_president' or 'us_senator'
             return race
     return None
@@ -181,7 +228,7 @@ def process_precinct_level_results(year, csvin):
                     district_number = district_numbers[district_type]
                     # Update vote totals for this district
                     results_row = results[race_match][district_type][district_number]
-                    results_row[party] += locale.atoi(row['Candidate Votes'])
+                    results_row[party] += locale.atoi(row[csv_column_names[year]['vote_count_column_name']])
                     # Update county list for this district
                     if row['County'] not in results_row['county_list']:
                         results_row['county_list'].append(row['County'])
@@ -196,6 +243,7 @@ if __name__ == "__main__":
         2020: {'csvin': '2020GEPrecinctLevelResultsPosted.csv'},
         2018: {'csvin': '2018GEPrecinctLevelResults.csv'},
         2016: {'csvin': '2016GeneralResultsPrecinctLevel.csv'},
+        2014: {'csvin': '2014GeneralPrecinctResults.csv'},
     }
 
     for year in years.keys():
