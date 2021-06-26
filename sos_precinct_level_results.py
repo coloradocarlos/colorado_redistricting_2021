@@ -46,6 +46,13 @@ statewide_races_by_year = {
         'us_president': r'President/Vice President',
         'us_senator': r'United States Senator',
     },
+    2018: {
+        'governor': r'Governor',
+        'sec_of_state': r'Secretary of State',
+        'treasurer': r'Treasurer',
+        'attorney_general': r'Attorney General',
+        'regent_at_large': r'Regent Of The University Of Colorado - At Large',
+    },
 }
 
 
@@ -164,6 +171,7 @@ if __name__ == "__main__":
 
     years = {
         2020: {'csvin': '2020GEPrecinctLevelResultsPosted.csv'},
+        2018: {'csvin': '2018GEPrecinctLevelResults.csv'},
     }
 
     for year in years.keys():
