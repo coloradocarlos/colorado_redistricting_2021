@@ -115,7 +115,7 @@ def write_csv_files(year, results):
     header = ('district', 'counties', 'democrat', 'republican', 'other')
     for race in results.keys():
         for district_type in results[race].keys():
-            csvout = f"./election_data/{year}_{race}_by_{district_type}.csv"
+            csvout = f"./election_data/{year}/{year}_{race}_by_{district_type}.csv"
             print(f"Writing {csvout}")
             with open(csvout, 'w') as fp2:
                 csvwriter = csv.DictWriter(fp2, fieldnames=header, extrasaction='ignore')

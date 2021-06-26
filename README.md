@@ -43,3 +43,15 @@ $ ... convert xlsx to csv...
 $ ... manually fix first row column header in csv to match the 2020 format...
 $ python3 sos_abstract.py
 ```
+## Precinct Level Results Rollup
+
+This rolls up the precinct level results for statewide offices into districts results. For the case of counties, the district number is the SOS county number.
+
+* 2020: President, US Senate
+
+```bash
+$ cd sos_files
+$ curl 2020GEPrecinctLevelResultsPosted.xlsx -o https://www.sos.state.co.us/pubs/elections/Results/2020/2020GEPrecinctLevelResultsPosted.xlsx
+$ ... convert xlsx to csv..
+$ python3 sos_precinct_level_results.py
+```
