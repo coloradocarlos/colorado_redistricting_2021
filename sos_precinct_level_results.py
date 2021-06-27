@@ -59,10 +59,15 @@ statewide_races_by_year = {
         'regent_at_large': r'Regent Of The University Of Colorado - At Large',
     },
     2014: {
+        'us_senator': r'United States Senator',
         'governor': r'Governor/Lieutenant Governor',
         'sec_of_state': r'Secretary of State',
         'treasurer': r'Treasurer',
         'attorney_general': r'Attorney General',
+    },
+    2012: {
+        'us_president': r'President/Vice President',
+        'regent_at_large': r'Regent Of The University Of Colorado - At Large',
     },
 }
 
@@ -97,6 +102,128 @@ provisional_precincts = {
             'co_county': 53,
         },
     },
+    2012: {
+        'Archuleta': {
+            'us_house': 3,
+            'co_senate': 6,
+            'co_house': 59,
+            'co_county': 4,
+        },
+        'Broomfield': {
+            'us_house': 2,
+            'co_senate': 23,
+            'co_house': 33,
+            'co_county': 64,
+        },
+        'Clear Creek': {
+            'us_house': 2,
+            'co_senate': 2,
+            'co_house': 13,
+            'co_county': 10,
+        },
+        'Conejos': {
+            'us_house': 3,
+            'co_senate': 35,
+            'co_house': 62,
+            'co_county': 11,
+        },
+        'Delta': {
+            'us_house': 3,
+            'co_senate': 5,
+            'co_house': 61,  # Could be 54
+            'co_county': 15,
+        },
+        'Dolores': {
+            'us_house': 3,
+            'co_senate': 6,
+            'co_house': 58,
+            'co_county': 17,
+        },
+        'Douglas': {
+            'us_house': 6,  # Could be 4
+            'co_senate': 30,  # Could be 4
+            'co_house': 43,  # Could be 39, 44, 45
+            'co_county': 18,
+        },
+        'Fremont': {
+            'us_house': 5,
+            'co_senate': 2,
+            'co_house': 60,  # Could be 47
+            'co_county': 22,
+        },
+        'Grand': {
+            'us_house': 2,
+            'co_senate': 8,
+            'co_house': 13,
+            'co_county': 25,
+        },
+        'Gunnison': {
+            'us_house': 3,
+            'co_senate': 5,
+            'co_house': 61,  # Could be 59
+            'co_county': 26,
+        },
+        'Jackson': {
+            'us_house': 3,
+            'co_senate': 8,
+            'co_house': 13,
+            'co_county': 29,
+        },
+        'Kit Carson': {
+            'us_house': 4,
+            'co_senate': 1,
+            'co_house': 65,
+            'co_county': 32,
+        },
+        'Larimer': {
+            'us_house': 2,
+            'co_senate': 14,  # Could be 23
+            'co_house': 52,  # Could be 49, 51, 53
+            'co_county': 35,
+        },
+        'Moffat': {
+            'us_house': 3,
+            'co_senate': 8,
+            'co_house': 57,
+            'co_county': 41,
+        },
+        'Montrose': {
+            'us_house': 3,
+            'co_senate': 6,
+            'co_house': 58,
+            'co_county': 43,
+        },
+        'Pitkin': {
+            'us_house': 3,
+            'co_senate': 5,
+            'co_house': 61,
+            'co_county': 49,
+        },
+        'Rio Blanco': {
+            'us_house': 3,
+            'co_senate': 8,
+            'co_house': 57,
+            'co_county': 52,
+        },
+        'Summit': {
+            'us_house': 2,
+            'co_senate': 8,
+            'co_house': 61,
+            'co_county': 59,
+        },
+        'Weld': {
+            'us_house': 4,
+            'co_senate': 23,
+            'co_house': 63,  # Could be 48, 49, 50
+            'co_county': 62,
+        },
+        'Yuma': {
+            'us_house': 4,
+            'co_senate': 1,
+            'co_house': 65,
+            'co_county': 63,
+        },
+    },
 }
 
 # SOS election results column names changed over time for some reason
@@ -116,7 +243,11 @@ csv_column_names = {
     2014: {
         'office_column_name': 'Office/Ballot Issue',
         'vote_count_column_name': 'Yes Votes/Percentage',
-    }
+    },
+    2012: {
+        'office_column_name': 'Office/Ballot Issue',
+        'vote_count_column_name': 'Yes Votes/Percentage',
+    },
 }
 
 
@@ -244,6 +375,7 @@ if __name__ == "__main__":
         2018: {'csvin': '2018GEPrecinctLevelResults.csv'},
         2016: {'csvin': '2016GeneralResultsPrecinctLevel.csv'},
         2014: {'csvin': '2014GeneralPrecinctResults.csv'},
+        2012: {'csvin': '2012GeneralPrecinctLevelResults.csv'},
     }
 
     for year in years.keys():
