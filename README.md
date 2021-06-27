@@ -47,7 +47,11 @@ $ python3 sos_abstract.py
 
 This rolls up the precinct level results for statewide offices into districts results. For the case of counties, the district number is the SOS county number.
 
-* 2020: President, US Senate
+* 2020: US President, US Senator
+* 2018: Governor, Secretary of State, Treasurer, Attorney General, CU Regent at Large
+* 2016: President, US Senate, CU Regent at Large
+* 2014: US Senator, Governor, Secretary of State, Treasurer, Attorney General
+* 2012: US President, CU Regent at Large
 
 ```bash
 $ cd sos_files
@@ -55,3 +59,7 @@ $ curl 2020GEPrecinctLevelResultsPosted.xlsx -o https://www.sos.state.co.us/pubs
 $ ... convert xlsx to csv..
 $ python3 sos_precinct_level_results.py
 ```
+
+### Provisional precincts
+
+2016, 2014, and 2012 have "provisional precincts" in their totals. There is no precinct number and therefore we don't know which distict these voters cast a ballot in. So the totals match up with the county totals, these provisional precincts were assigned a congressional district, state senate district, and state house district. The totals appear low enough that this should not skew the data significantly.
