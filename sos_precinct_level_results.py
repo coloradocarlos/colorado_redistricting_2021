@@ -46,12 +46,214 @@ statewide_races_by_year = {
         'us_president': r'President/Vice President',
         'us_senator': r'United States Senator',
     },
+    2018: {
+        'governor': r'Governor',
+        'sec_of_state': r'Secretary of State',
+        'treasurer': r'Treasurer',
+        'attorney_general': r'Attorney General',
+        'regent_at_large': r'Regent Of The University Of Colorado - At Large',
+    },
+    2016: {
+        'us_president': r'President/Vice President',
+        'us_senator': r'United States Senator',
+        'regent_at_large': r'Regent Of The University Of Colorado - At Large',
+    },
+    2014: {
+        'us_senator': r'United States Senator',
+        'governor': r'Governor/Lieutenant Governor',
+        'sec_of_state': r'Secretary of State',
+        'treasurer': r'Treasurer',
+        'attorney_general': r'Attorney General',
+    },
+    2012: {
+        'us_president': r'President/Vice President',
+        'regent_at_large': r'Regent Of The University Of Colorado - At Large',
+    },
+}
+
+# These are low count precincts that are provisional and not assigned a precinct number presumably to preserve the privacy of the voters.
+# Let's make an educated guess based on the contents of the SOS file.
+provisional_precincts = {
+    2016: {
+        'Larimer': {
+            'us_house': 2,
+            'co_senate': 14,  # Could also be 52, 53
+            'co_house': 49,
+            'co_county': 35,
+        },
+    },
+    2014: {
+        'Larimer': {
+            'us_house': 2,
+            'co_senate': 15,
+            'co_house': 49,  # Could also be 52, 53
+            'co_county': 35,
+        },
+        'Summit': {
+            'us_house': 2,
+            'co_senate': 8,
+            'co_house': 61,
+            'co_county': 59,
+        },
+        'Rio Grande': {
+            'us_house': 3,
+            'co_senate': 35,
+            'co_house': 62,
+            'co_county': 53,
+        },
+    },
+    2012: {
+        'Archuleta': {
+            'us_house': 3,
+            'co_senate': 6,
+            'co_house': 59,
+            'co_county': 4,
+        },
+        'Broomfield': {
+            'us_house': 2,
+            'co_senate': 23,
+            'co_house': 33,
+            'co_county': 64,
+        },
+        'Clear Creek': {
+            'us_house': 2,
+            'co_senate': 2,
+            'co_house': 13,
+            'co_county': 10,
+        },
+        'Conejos': {
+            'us_house': 3,
+            'co_senate': 35,
+            'co_house': 62,
+            'co_county': 11,
+        },
+        'Delta': {
+            'us_house': 3,
+            'co_senate': 5,
+            'co_house': 61,  # Could be 54
+            'co_county': 15,
+        },
+        'Dolores': {
+            'us_house': 3,
+            'co_senate': 6,
+            'co_house': 58,
+            'co_county': 17,
+        },
+        'Douglas': {
+            'us_house': 6,  # Could be 4
+            'co_senate': 30,  # Could be 4
+            'co_house': 43,  # Could be 39, 44, 45
+            'co_county': 18,
+        },
+        'Fremont': {
+            'us_house': 5,
+            'co_senate': 2,
+            'co_house': 60,  # Could be 47
+            'co_county': 22,
+        },
+        'Grand': {
+            'us_house': 2,
+            'co_senate': 8,
+            'co_house': 13,
+            'co_county': 25,
+        },
+        'Gunnison': {
+            'us_house': 3,
+            'co_senate': 5,
+            'co_house': 61,  # Could be 59
+            'co_county': 26,
+        },
+        'Jackson': {
+            'us_house': 3,
+            'co_senate': 8,
+            'co_house': 13,
+            'co_county': 29,
+        },
+        'Kit Carson': {
+            'us_house': 4,
+            'co_senate': 1,
+            'co_house': 65,
+            'co_county': 32,
+        },
+        'Larimer': {
+            'us_house': 2,
+            'co_senate': 14,  # Could be 23
+            'co_house': 52,  # Could be 49, 51, 53
+            'co_county': 35,
+        },
+        'Moffat': {
+            'us_house': 3,
+            'co_senate': 8,
+            'co_house': 57,
+            'co_county': 41,
+        },
+        'Montrose': {
+            'us_house': 3,
+            'co_senate': 6,
+            'co_house': 58,
+            'co_county': 43,
+        },
+        'Pitkin': {
+            'us_house': 3,
+            'co_senate': 5,
+            'co_house': 61,
+            'co_county': 49,
+        },
+        'Rio Blanco': {
+            'us_house': 3,
+            'co_senate': 8,
+            'co_house': 57,
+            'co_county': 52,
+        },
+        'Summit': {
+            'us_house': 2,
+            'co_senate': 8,
+            'co_house': 61,
+            'co_county': 59,
+        },
+        'Weld': {
+            'us_house': 4,
+            'co_senate': 23,
+            'co_house': 63,  # Could be 48, 49, 50
+            'co_county': 62,
+        },
+        'Yuma': {
+            'us_house': 4,
+            'co_senate': 1,
+            'co_house': 65,
+            'co_county': 63,
+        },
+    },
+}
+
+# SOS election results column names changed over time for some reason
+csv_column_names = {
+    2020: {
+        'office_column_name': 'Office/Issue/Judgeship',
+        'vote_count_column_name': 'Candidate Votes',
+    },
+    2018: {
+        'office_column_name': 'Office/Issue/Judgeship',
+        'vote_count_column_name': 'Candidate Votes',
+    },
+    2016: {
+        'office_column_name': 'Office/Issue/Judgeship',
+        'vote_count_column_name': 'Candidate Votes',
+    },
+    2014: {
+        'office_column_name': 'Office/Ballot Issue',
+        'vote_count_column_name': 'Yes Votes/Percentage',
+    },
+    2012: {
+        'office_column_name': 'Office/Ballot Issue',
+        'vote_count_column_name': 'Yes Votes/Percentage',
+    },
 }
 
 
 def race_matcher(year, row):
     for race in statewide_races_by_year[year].keys():
-        if row['Office/Issue/Judgeship'] == statewide_races_by_year[year][race]:
+        if row[csv_column_names[year]['office_column_name']] == statewide_races_by_year[year][race]:
             # Return 'us_president' or 'us_senator'
             return race
     return None
@@ -84,7 +286,7 @@ def init_results_dict(year):
     return results
 
 
-def precinct_number_matcher(precinct_number):
+def precinct_number_matcher(precinct_number, year, county):
     # https://www.sos.state.co.us/pubs/elections/FAQs/VoterFAQs.html
     # • First digit – Congressional District
     # • Second and third digits – State Senate District
@@ -102,6 +304,12 @@ def precinct_number_matcher(precinct_number):
             group_number = district_types[district_type]['precinct_match_group_number']
             precinct_dict[district_type] = int(matches.groups()[group_number])
         # Example: {'us_house': 1, 'co_senate': 2, 'co_house': 3, 'co_county': 4}
+        return precinct_dict
+    elif precinct_number == 'Provisional':
+        # For provisional precincts, we use the County name and Year to determine the districts they voted in
+        precinct_dict = dict()
+        for district_type in district_types.keys():
+            precinct_dict[district_type] = provisional_precincts[year][county][district_type]
         return precinct_dict
     else:
         raise Exception(f"Unable to match precinct number {precinct_number}!")
@@ -138,7 +346,7 @@ def process_precinct_level_results(year, csvin):
             race_match = race_matcher(year, row)
             if race_match:
                 # district_numbers is a dict parsed from Precinct: {'us_house': 1, 'co_senate': 2, 'co_house': 3, 'co_county': 4}
-                district_numbers = precinct_number_matcher(row['Precinct'])
+                district_numbers = precinct_number_matcher(row['Precinct'], year, row['County'])
                 # district_type will be 'us_house', 'co_senate', 'co_house', 'co_county'
                 for district_type in results[race_match]:
                     if row['Party'] == 'Democratic Party':
@@ -151,7 +359,7 @@ def process_precinct_level_results(year, csvin):
                     district_number = district_numbers[district_type]
                     # Update vote totals for this district
                     results_row = results[race_match][district_type][district_number]
-                    results_row[party] += locale.atoi(row['Candidate Votes'])
+                    results_row[party] += locale.atoi(row[csv_column_names[year]['vote_count_column_name']])
                     # Update county list for this district
                     if row['County'] not in results_row['county_list']:
                         results_row['county_list'].append(row['County'])
@@ -164,6 +372,10 @@ if __name__ == "__main__":
 
     years = {
         2020: {'csvin': '2020GEPrecinctLevelResultsPosted.csv'},
+        2018: {'csvin': '2018GEPrecinctLevelResults.csv'},
+        2016: {'csvin': '2016GeneralResultsPrecinctLevel.csv'},
+        2014: {'csvin': '2014GeneralPrecinctResults.csv'},
+        2012: {'csvin': '2012GeneralPrecinctLevelResults.csv'},
     }
 
     for year in years.keys():
